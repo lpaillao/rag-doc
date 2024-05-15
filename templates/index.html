@@ -1,26 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload PDF</title>
+    <title>Subir PDF y Generar Embeddings</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dark-theme.css') }}">
 </head>
 <body>
-    <h1>Upload PDF</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="file" id="fileInput" accept=".pdf" required>
-        <button type="submit">Upload</button>
-    </form>
-    <div id="jsonPreview"></div>
-    <form id="embeddingsForm" style="display:none;">
-        <input type="text" name="embeddings_name" placeholder="Enter name for embeddings" required>
-        <button type="submit">Generate Embeddings</button>
-    </form>
-    <div id="progressBar" style="display:none;">
-        <progress value="0" max="100" id="progress"></progress>
+    <div class="container">
+        <h1>Subir PDF y Generar Embeddings</h1>
+        <br>
+        <a href="{{ url_for('chat') }}" class="button">Ir al Chat</a>
+        <br>
+        <br>
+        <br>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput" accept=".pdf" required>
+            <button type="submit">Subir</button>
+        </form>
+        <div id="jsonPreview" class="json-preview"></div>
+        <form id="embeddingsForm" class="hidden">
+            <input type="text" name="embeddings_name" placeholder="Nombre para los embeddings" required>
+            <button type="submit">Generar Embeddings</button>
+        </form>
+        <div id="progressBar" class="hidden">
+            <progress value="0" max="100" id="progress"></progress>
+        </div>
+        <div id="status"></div>
+        <div id="chatLink" class="hidden">
+            <a href="{{ url_for('chat') }}" class="button">Ir al Chat</a>
+        </div>
     </div>
-    <div id="status"></div>
     <script>
         document.getElementById('uploadForm').onsubmit = async function(event) {
             event.preventDefault();
@@ -36,8 +47,8 @@
             if (result.status === 'success') {
                 const jsonPreview = document.getElementById('jsonPreview');
                 jsonPreview.innerHTML = '<pre>' + JSON.stringify(result.pages_data, null, 4) + '</pre>';
-                document.getElementById('embeddingsForm').style.display = 'block';
-                document.getElementById('embeddingsForm').dataset.jsonPath = result.json_path; // Save the JSON path
+                document.getElementById('embeddingsForm').classList.remove('hidden');
+                document.getElementById('embeddingsForm').dataset.jsonPath = result.json_path;
             }
         };
 
@@ -51,7 +62,7 @@
                 embeddings_name: embeddingsName
             };
 
-            document.getElementById('progressBar').style.display = 'block';
+            document.getElementById('progressBar').classList.remove('hidden');
 
             const response = await fetch('/generate_embeddings', {
                 method: 'POST',
@@ -63,7 +74,8 @@
 
             const result = await response.json();
             if (result.status === 'success') {
-                document.getElementById('status').innerText = 'Embeddings generated and FAISS index created successfully.';
+                document.getElementById('status').innerText = 'Embeddings generados y el índice FAISS creado exitosamente.';
+                document.getElementById('chatLink').classList.remove('hidden');
             }
         };
     </script>

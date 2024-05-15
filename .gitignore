@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.bin
+*.npy
+*.json
+*.pdf
 # C extensions
 *.so
 
@@ -159,3 +162,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 config.py
+data/folosofia01.npy
+data/raw/folosofia01.json

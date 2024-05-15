@@ -3,6 +3,38 @@ body {
     color: #ccc;
 }
 
+h1 {
+    background-color: #333;
+}
+
+.container {
+    background-color: #2e2e2e;
+    color: #ccc;
+}
+
+input[type="file"],
+input[type="text"],
+button {
+    background-color: #444;
+    color: #ccc;
+    border: 1px solid #555;
+}
+
+button {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.json-preview {
+    background-color: #333;
+    color: #ccc;
+    border: 1px solid #555;
+}
+
 .chat-header {
     background-color: #333;
 }

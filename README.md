@@ -71,38 +71,6 @@ Este proyecto es una aplicación de chatbot que utiliza Recuperación con Genera
 
 2. **Acceder a la Aplicación**: Abre `http://127.0.0.1:5000` en tu navegador para interactuar con la aplicación.
 
-## Despliegue en Heroku
-
-1. **Instalar Heroku CLI**: Descarga e instala la [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).
-
-2. **Crear un archivo `Procfile`**:
-
-    ```plaintext
-    web: python app.py
-    ```
-
-3. **Crear un archivo `requirements.txt`**:
-
-    ```sh
-    pip freeze > requirements.txt
-    ```
-
-4. **Iniciar un repositorio Git**:
-
-    ```sh
-    git init
-    git add .
-    git commit -m "Initial commit"
-    ```
-
-5. **Desplegar en Heroku**:
-
-    ```sh
-    heroku create
-    git push heroku master
-    heroku ps:scale web=1
-    heroku open
-    ```
 
 ## Estructura del Proyecto
 

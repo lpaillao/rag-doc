@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +10,15 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <h1>Chat with Documents</h1>
+            <h1>Chat con Documentos</h1>
             <select id="embeddingsSelect">
-                <option value="" disabled selected>Select Embeddings</option>
+                <option value="" disabled selected>Seleccionar Embeddings</option>
             </select>
         </div>
         <div id="chatBox" class="chat-box"></div>
         <form id="chatForm" class="chat-form">
-            <input type="text" id="question" placeholder="Ask your question..." required>
-            <button type="submit">Ask</button>
+            <input type="text" id="question" placeholder="Haz tu pregunta..." required>
+            <button type="submit">Preguntar</button>
         </form>
     </div>
     <script>
@@ -56,15 +56,37 @@
                 const chatBox = document.getElementById('chatBox');
                 const userMessage = document.createElement('div');
                 userMessage.classList.add('chat-message', 'user-message');
-                userMessage.innerText = `You: ${result.question}`;
+                userMessage.innerText = `Tú: ${result.question}`;
                 const botMessage = document.createElement('div');
                 botMessage.classList.add('chat-message', 'bot-message');
-                botMessage.innerText = `Bot: ${result.response}`;
+                botMessage.innerHTML = `Bot: ${result.response} <br><a href="#" onclick="toggleDebugInfo(event, 'debug-${result.total_tokens}')">Ver detalles</a>`;
+                
+                const debugInfo = document.createElement('div');
+                debugInfo.id = `debug-${result.total_tokens}`;
+                debugInfo.classList.add('debug-info', 'hidden');
+                debugInfo.innerHTML = `
+                    <p><strong>Tokens utilizados:</strong> ${result.total_tokens}</p>
+                    <p><strong>Tokens de entrada:</strong> ${result.prompt_tokens}</p>
+                    <p><strong>Tokens de salida:</strong> ${result.completion_tokens}</p>
+                    <p><strong>Contexto:</strong> ${result.context.join('<br>')}</p>
+                `;
+
                 chatBox.appendChild(userMessage);
                 chatBox.appendChild(botMessage);
+                chatBox.appendChild(debugInfo);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         };
+
+        function toggleDebugInfo(event, debugId) {
+            event.preventDefault();
+            const debugInfo = document.getElementById(debugId);
+            if (debugInfo.classList.contains('hidden')) {
+                debugInfo.classList.remove('hidden');
+            } else {
+                debugInfo.classList.add('hidden');
+            }
+        }
 
         window.onload = loadEmbeddings;
     </script>
