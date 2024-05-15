@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Upload PDF</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" accept=".pdf" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="jsonPreview"></div>
+    <form id="embeddingsForm" style="display:none;">
+        <input type="text" name="embeddings_name" placeholder="Enter name for embeddings" required>
+        <button type="submit">Generate Embeddings</button>
+    </form>
+    <div id="progressBar" style="display:none;">
+        <progress value="0" max="100" id="progress"></progress>
+    </div>
+    <div id="status"></div>
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                const jsonPreview = document.getElementById('jsonPreview');
+                jsonPreview.innerHTML = '<pre>' + JSON.stringify(result.pages_data, null, 4) + '</pre>';
+                document.getElementById('embeddingsForm').style.display = 'block';
+                document.getElementById('embeddingsForm').dataset.jsonPath = result.json_path; // Save the JSON path
+            }
+        };
+
+        document.getElementById('embeddingsForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const embeddingsName = event.target.embeddings_name.value;
+            const jsonPath = event.target.dataset.jsonPath;
+
+            const data = {
+                json_path: jsonPath,
+                embeddings_name: embeddingsName
+            };
+
+            document.getElementById('progressBar').style.display = 'block';
+
+            const response = await fetch('/generate_embeddings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                document.getElementById('status').innerText = 'Embeddings generated and FAISS index created successfully.';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dark-theme.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Chat with Documents</h1>
+            <select id="embeddingsSelect">
+                <option value="" disabled selected>Select Embeddings</option>
+            </select>
+        </div>
+        <div id="chatBox" class="chat-box"></div>
+        <form id="chatForm" class="chat-form">
+            <input type="text" id="question" placeholder="Ask your question..." required>
+            <button type="submit">Ask</button>
+        </form>
+    </div>
+    <script>
+        async function loadEmbeddings() {
+            const response = await fetch('/embeddings');
+            const embeddings = await response.json();
+            const select = document.getElementById('embeddingsSelect');
+            embeddings.forEach(embedding => {
+                const option = document.createElement('option');
+                option.value = embedding;
+                option.text = embedding;
+                select.add(option);
+            });
+        }
+
+        document.getElementById('chatForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const question = document.getElementById('question').value;
+            const embeddingsName = document.getElementById('embeddingsSelect').value;
+
+            const data = {
+                query: question,
+                embeddings_name: embeddingsName
+            };
+
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.response) {
+                const chatBox = document.getElementById('chatBox');
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('chat-message', 'user-message');
+                userMessage.innerText = `You: ${result.question}`;
+                const botMessage = document.createElement('div');
+                botMessage.classList.add('chat-message', 'bot-message');
+                botMessage.innerText = `Bot: ${result.response}`;
+                chatBox.appendChild(userMessage);
+                chatBox.appendChild(botMessage);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        };
+
+        window.onload = loadEmbeddings;
+    </script>
+</body>
+</html>

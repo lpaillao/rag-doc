@@ -1,0 +1,39 @@
+body {
+    background-color: #1e1e1e;
+    color: #ccc;
+}
+
+.chat-header {
+    background-color: #333;
+}
+
+.chat-box {
+    background-color: #2e2e2e;
+}
+
+.chat-form {
+    background-color: #333;
+}
+
+.chat-form input {
+    background-color: #444;
+    color: #ccc;
+}
+
+.chat-form button {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.chat-message {
+    color: #ccc;
+}
+
+.user-message {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.bot-message {
+    background-color: #444;
+}
