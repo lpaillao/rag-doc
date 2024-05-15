@@ -1,0 +1,7 @@
+
+flask
+flask-cors
+pymupdf
+sentence-transformers
+faiss-cpu
+openai
